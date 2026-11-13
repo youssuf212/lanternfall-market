@@ -32,7 +32,7 @@
   };
   let C = CITY.lantern; W.LOCS = C.locs; W.width = C.width;
   W.loc = id => W.LOCS.find(l => l.id === id);
-  W.cam = 0; W.near = null;
+  W.cam = 0; W.near = null; W.keys = { l: false, r: false };
   const p = W.p = { x: 320, tx: 320, dir: 1, ph: 0, walk: 0, dest: null };
   const SK = ['#f0b98a', '#d99a6c', '#b87a50', '#8a5a3c', '#f7cfa6'], TOPS = ['#e0457b', '#2fb3a4', '#7a4fd0', '#f2b033', '#4a8fe0', '#ef5350', '#6ab04c', '#fff3d8'], HATS = ['turban', 'straw', 'cap', 'hood', null, null];
   let npcs = [];
@@ -71,6 +71,8 @@
   W.update = function (dt) {
     const st = G.st, busy = !!G.busy;
     const spd = 340 * (st.perks.boots ? 1.35 : 1) * (G.S.eff() < 1 ? .8 : 1);
+    const kd = (W.keys.r ? 1 : 0) - (W.keys.l ? 1 : 0);
+    if (kd && !busy && !G.UI.sheetOpen && !G.UI.modalOpen && st.time < G.DUSK) { p.tx = clamp(p.x + kd * 40, 90, C.maxx); p.dest = null; }
     const dx = p.tx - p.x;
     if (!busy && Math.abs(dx) > 5) {
       p.dir = dx > 0 ? 1 : -1; p.x += p.dir * Math.min(Math.abs(dx), spd * dt); p.walk = Math.min(1, p.walk + dt * 8); p.ph += dt * 12;

@@ -27,6 +27,19 @@
     if (G.mode === 'td') TD.tap(x, y);
     else if (UI.sheetOpen) UI.closeSheet(); else if (G.st.time < G.DUSK) W.tap(x, y);
   });
+  const key = (e, down) => {
+    if (/^(INPUT|TEXTAREA)$/.test((e.target && e.target.tagName) || '')) return;
+    const k = e.key.toLowerCase();
+    if (k === 'a' || k === 'arrowleft') W.keys.l = down;
+    else if (k === 'd' || k === 'arrowright') W.keys.r = down;
+    else if (down && !e.repeat && (k === 'e' || k === 'enter' || k === 'w' || k === 'arrowup') && G.mode === 'day' && W.near && !UI.sheetOpen && !UI.modalOpen && !G.busy) { G.Au.init(); W.goTo(W.near.id); }
+    else if (down && k === 'escape' && UI.sheetOpen) UI.closeSheet();
+    else return;
+    if (down) G.Au.init();
+    e.preventDefault();
+  };
+  window.addEventListener('keydown', e => key(e, true)); window.addEventListener('keyup', e => key(e, false));
+  window.addEventListener('blur', () => { W.keys.l = W.keys.r = false; });
   let last = performance.now(), hudT = 0, saveT = 0;
   function frame(now) {
     requestAnimationFrame(frame);
